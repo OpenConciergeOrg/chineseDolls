@@ -59,8 +59,12 @@
       <!-- main-content -->
       <div class="grid-container">
 
-        <div class="column-24 center-column leader-2 trailer-2 text-center tablet-hide">
-          <iframe width="800" height="600" frameborder="0" scrolling="no" allowfullscreen src="https://arcg.is/S4zin"></iframe>
+        <div class="column-24 center-column leader-2 trailer-2 text-center tablet-hide" id="iframeDesktopDiv">
+          <div class="loader is-active padding-leader-3 padding-trailer-3" id="loader">
+            <div class="loader-bars"></div>
+            <div class="loader-text">Loading...</div>
+          </div>
+          <!-- <iframe width="800" height="600" frameborder="0" scrolling="no" allowfullscreen src="https://arcg.is/S4zin"></iframe> -->
         </div>
 
         <div class="column-12 center-column leader-2 trailer-2 text-center tablet-show">
@@ -175,6 +179,33 @@
     <!-- interactive patterns need to be initialized -->
     <script>
        calcite.init()
+    </script>
+    <script src="https://js.arcgis.com/4.13/"></script>
+    <script>
+      require([
+        "esri/portal/Portal",
+        "esri/portal/PortalGroup"
+      ], function(
+        Portal,
+        PortalGroup
+      ) {
+        const iframeDesktopDiv = document.getElementById("iframeDesktopDiv");
+        const iframeDesktop = document.createElement("iframe");
+
+        const loader = document.getElementById("loader");
+
+        iframeDesktop.onload = function() {
+          loader.classList.remove("is-active");
+        };
+        iframeDesktop.setAttribute("width", "800");
+        iframeDesktop.setAttribute("height", "600");
+        iframeDesktop.setAttribute("frameborder", "0");
+        iframeDesktop.setAttribute("scrolling", "no");
+        iframeDesktop.setAttribute("allowfullscreen", "");
+        iframeDesktop.setAttribute("src", "https://arcg.is/S4zin");
+        iframeDesktopDiv.appendChild(iframeDesktop);
+
+      });
     </script>
   </body>
 </html>
