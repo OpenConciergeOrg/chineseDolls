@@ -1,8 +1,6 @@
 
 <!doctype html>
-<!--[if lt IE 9]>  <html class="ie lt-ie9 ie8"> <![endif]-->
-<!--[if IE 9]>     <html class="ie ie9"> <![endif]-->
-<!--[if !IE]><!--> <html> <!--<![endif]-->
+<html>
   <head>
     <meta charset="utf-8">
     <meta content="IE=edge" http-equiv="X-UA-Compatible">
@@ -20,10 +18,6 @@
     <link rel="shortcut icon" href="/img/favicon.ico">
     <!-- get calcite-web css from the cdn (use latest version) -->
     <link rel="stylesheet" href="https://s3-us-west-1.amazonaws.com/patterns.esri.com/files/calcite-web/1.2.5/css/calcite-web.min.css">
-    <!--[if lt IE 9]>
-      <script src="/assets/javascripts/libs/selectivizr.js"></script>
-      <script src="/assets/javascripts/libs/html5shiv.js"></script>
-    <![endif]-->
   </head>
   <body>
     <div class="wrapper">
@@ -156,7 +150,6 @@
           const blockgroup = document.getElementById("blockgroup" + (k+1));
           listGroup[k].push(blockgroup);
         };
-        // console.log(listGroup);
         
         
         queryGroup();
