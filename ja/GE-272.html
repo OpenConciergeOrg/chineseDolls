@@ -1,0 +1,198 @@
+
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, user-scalable=no">
+    <title></title>
+    <style>
+      .card-image{
+        object-fit:cover;
+        width:300px;
+        height:300px;
+      }
+    </style>
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <!-- get calcite-web css from the cdn (use latest version) -->
+    <link rel="stylesheet" href="https://s3-us-west-1.amazonaws.com/patterns.esri.com/files/calcite-web/1.2.5/css/calcite-web.min.css">
+    <link rel="stylesheet" href="../lightbox/css/lightbox.min.css">
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="top-nav">
+        <div class="grid-container">
+          <div class="column-24">
+
+            <nav class="top-nav-list" role="navigation" aria-labelledby="topnav">
+              <a class="top-nav-link" href="top.html">Top</a>
+              <a class="top-nav-link" href="about.html">About</a>
+            </nav>
+
+            <div class="dropdown js-dropdown right top-nav-link">
+              <button class="btn btn-transparent dropdown-btn js-dropdown-toggle" tabindex="0" aria-haspopup="true" aria-expanded="false">
+                日本語
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 32 32" class="svg-icon"><path d="M28 9v5L16 26 4 14V9l12 12L28 9z"/></svg>
+              </button>
+
+              <nav class="dropdown-menu dropdown-right" role="menu">
+                <a class="dropdown-link" role="menuitem" id="langen">English</a>
+                <a class="dropdown-link" role="menuitem" id="langcn">简体中文</a>
+              </nav>
+            </div>
+
+          </div>
+        </div>
+      </header>
+
+
+      <!-- main-content -->
+      <div class="grid-container">
+
+        <div class="column-24 trailer-1">
+          <div class="block-group block-group-4-up tablet-block-group-2-up" id="rootCardDiv">
+          </div>
+        </div>
+
+        <div class="column-24" id="metadataDiv"></div>
+
+      </div>
+    </div>
+
+    <footer class="footer padding-leader-1 padding-trailer-1 text-center">
+      (c) <a class="link-darker-gray" href="https://www.bun.kyoto-u.ac.jp/geography/geo-top_page/">京都大学地理学教室</a> All rights reserved.
+    </footer>
+
+    <script src="../lightbox/js/lightbox-plus-jquery.js"></script>
+    <!-- get calcite-web js from the cdn (use latest version) -->
+    <script src="https://s3-us-west-1.amazonaws.com/patterns.esri.com/files/calcite-web/1.2.5/js/calcite-web.min.js"></script>
+
+    <!-- interactive patterns need to be initialized -->
+    <script>
+       calcite.init()
+    </script>
+    <script src="https://js.arcgis.com/4.14/"></script>
+    <script>
+      require([
+        "esri/layers/FeatureLayer"
+      ], function(
+        FeatureLayer
+      ) {
+
+        const filename = window.location.href.split('/').pop().replace(".html", "");
+        document.title = filename;
+
+        const langen = document.getElementById("langen");
+        langen.href = "../en/" + filename + ".html";
+
+        const langcn = document.getElementById("langcn");
+        langen.href = "../cn/" + filename + ".html";
+
+
+        const metadataFL = new FeatureLayer({
+          url: "https://services9.arcgis.com/qKCfk1d1Trl16kF0/arcgis/rest/services/chineseDollsMetadata/FeatureServer/0"
+        });
+
+        const rootCardDiv =  document.getElementById("rootCardDiv");
+
+        const lstFld = [
+          {fldname: "group_", alias: "分類"},
+          {fldname: "id", alias: "民族資料整理番号"},
+          {fldname: "size", alias: "寸法（底面；高さ）単位cm"},
+          {fldname: "material", alias: "素材等"},
+          {fldname: "purchase_record", alias: "購入記録"},
+          {fldname: "equipment_id", alias: "備品番号（平成10年4月1日)"},
+          {fldname: "same_type_record1", alias: "同種資料(1)"},
+          {fldname: "same_type_record2", alias: "同種資料(2)"},
+          {fldname: "same_type_record3", alias: "同種資料(3)"},
+          {fldname: "note", alias: "備考"}
+        ];
+
+
+        							
+        const metadataDiv =  document.getElementById("metadataDiv");
+        
+        
+
+        const queryParams = metadataFL.createQuery();
+        queryParams.returnGeometry = false;
+        queryParams.where = "id = '" + filename + "'";
+        queryParams.outFields = ["*"];
+
+        metadataFL.queryFeatures(queryParams)
+        .then(addImage)
+        .then(addMetadata)
+        .catch(function(error) {
+          console.log(error);
+        });
+
+        function addImage(response){
+          const imgcnt = response.features[0].attributes.ImgCnt;
+          const link3d = response.features[0].attributes.link3d;
+
+          function setImage(i){
+            const cardBlock = document.createElement('div');
+            cardBlock.classList.add("card");
+            cardBlock.classList.add("block");
+            cardBlock.classList.add("tablet-leader-1");
+            cardBlock.classList.add("leader-1");
+            rootCardDiv.appendChild(cardBlock);
+
+            const figure = document.createElement('figure');
+            figure.classList.add("card-image-wrap");
+            cardBlock.appendChild(figure);
+
+            const a = document.createElement('a');
+            if (i === 0){
+              a.href = link3d;
+              a.setAttribute("target", "_blank");
+            } else {
+              a.href = "../img/" + filename + "_" + i + "_resize.jpg";
+              a.setAttribute("data-lightbox", "demo");
+            }
+            
+            figure.append(a);
+
+            const img = document.createElement('img');
+            img.classList.add("card-image");
+            img.src = "../img/" + filename + "_" + i + "_resize.jpg";
+            a.append(img);
+          }
+
+          if (link3d){
+            for(let i = 0; i <= imgcnt; i++) {
+              setImage(i);
+            };
+          } else {
+            for(let i = 1; i <= imgcnt; i++) {
+              setImage(i);
+            };
+          }
+          
+          return response;
+        };
+
+        function addMetadata(response){
+
+          for(let i = 0; i < lstFld.length; i++) {
+            const title = document.createElement('div');
+            title.classList.add("text-light-gray");
+            title.innerHTML = lstFld[i].alias;
+            metadataDiv.appendChild(title);
+
+            const attribute = response.features[0].attributes[lstFld[i].fldname];
+            const value = document.createElement('div');
+            value.classList.add("trailer-1");
+            value.classList.add("padding-left-1");
+            value.innerHTML = attribute;
+            metadataDiv.appendChild(value);
+          };
+
+          
+        };
+
+      });
+    </script>
+  </body>
+</html>
