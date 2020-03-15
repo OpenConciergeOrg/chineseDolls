@@ -38,7 +38,7 @@
 
               <nav class="dropdown-menu dropdown-right" role="menu">
                 <a class="dropdown-link" role="menuitem" id="langen">English</a>
-                <a class="dropdown-link" role="menuitem" id="langcn">简体中文</a>
+                <a class="dropdown-link" role="menuitem" id="langcn">繁體中文</a>
               </nav>
             </div>
 
@@ -61,7 +61,7 @@
     </div>
 
     <footer class="footer padding-leader-1 padding-trailer-1 text-center">
-      (c) <a class="link-darker-gray" href="https://www.bun.kyoto-u.ac.jp/geography/geo-top_page/">京都大学地理学教室</a> All rights reserved.
+      (c) <a class="link-darker-gray" href="https://www.bun.kyoto-u.ac.jp/geography/geo-top_page/">京都大学大学院文学研究科・地理学専修</a> All rights reserved.
     </footer>
 
     <script src="../lightbox/js/lightbox-plus-jquery.js"></script>
@@ -87,11 +87,11 @@
         langen.href = "../en/" + filename + ".html";
 
         const langcn = document.getElementById("langcn");
-        langen.href = "../cn/" + filename + ".html";
+        langcn.href = "../cn/" + filename + ".html";
 
 
         const metadataFL = new FeatureLayer({
-          url: "https://services9.arcgis.com/qKCfk1d1Trl16kF0/arcgis/rest/services/chineseDollsMetadata/FeatureServer/0"
+          url: "https://services9.arcgis.com/qKCfk1d1Trl16kF0/arcgis/rest/services/chineseDollsMetadata_v3/FeatureServer/0"
         });
 
         const rootCardDiv =  document.getElementById("rootCardDiv");
@@ -117,7 +117,7 @@
 
         const queryParams = metadataFL.createQuery();
         queryParams.returnGeometry = false;
-        queryParams.where = "id = '" + filename + "'";
+        queryParams.where = "id = '" + filename + "' AND lang = 'ja'" ;
         queryParams.outFields = ["*"];
 
         metadataFL.queryFeatures(queryParams)
